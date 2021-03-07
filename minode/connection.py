@@ -387,6 +387,9 @@ class Connection(threading.Thread):
                     logging.debug(dest)
                     shared.i2p_unchecked_node_pool.add((dest, 'i2p'))
                 shared.vector_advertise_queue.put(obj.vector)
+                if shared.zmq_socket:
+                    shared.zmq_socket.send(
+                        b'obj %i ' % obj.object_type + obj.to_bytes())
 
         elif m.command == b'getdata':
             getdata = message.GetData.from_message(m)

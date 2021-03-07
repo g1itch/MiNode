@@ -63,3 +63,5 @@ connection_limit = 250
 
 objects = {}
 objects_lock = threading.Lock()
+
+zmq_socket = None
