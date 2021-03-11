@@ -1,10 +1,17 @@
 import unittest
 import signal
+import socket
 import subprocess
 import tempfile
 import time
 
 import psutil
+
+try:
+    socket.socket().bind(('127.0.0.1', 7656))
+    i2p_port_free = True
+except (OSError, socket.error):
+    i2p_port_free = False
 
 
 class TestProcessProto(unittest.TestCase):
@@ -65,11 +72,13 @@ class TestProcessShutdown(TestProcessProto):
 
 class TestProcess(TestProcessProto):
     """The test case for minode process"""
+    _wait_time = 20
+
     def test_connections(self):
         """Check minode process connections"""
         _started = time.time()
         connections = []
-        for t in range(40):
+        for t in range(self._wait_time * 2):
             connections = self.process.connections()
             if len(connections) > self._connection_limit / 2:
                 _time_to_connect = round(time.time() - _started)
@@ -77,8 +86,8 @@ class TestProcess(TestProcessProto):
             time.sleep(0.5)
         else:
             self.fail(
-                'Failed establish at least %s connections in 20 sec'
-                % (self._connection_limit / 2))
+                'Failed establish at least %s connections in %s sec'
+                % (self._connection_limit / 2, self._wait_time))
         for t in range(_time_to_connect * 2):
             self.assertLessEqual(
                 len(connections), self._connection_limit + 1,  # one listening
@@ -91,3 +100,12 @@ class TestProcess(TestProcessProto):
                         'Listening while started with --no-incoming')
                 self.assertEqual(c.laddr[1], self._listening_port or 8444)
                 break
+
+
+@unittest.skipIf(i2p_port_free, 'no running i2pd detected')
+class TestProcessI2P(TestProcess):
+    """Test minode process with --i2p and no IP"""
+    _process_cmd = ['minode', '--i2p', '--no-ip']
+    _connection_limit = 4
+    _wait_time = 120
+    _listening_port = 8448
