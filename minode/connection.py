@@ -389,7 +389,7 @@ class Connection(threading.Thread):
                 shared.vector_advertise_queue.put(obj.vector)
                 if shared.zmq_socket:
                     shared.zmq_socket.send(
-                        b'obj %i ' % obj.object_type + obj.to_bytes())
+                        b'obj\x00%i\x00' % obj.object_type + obj.to_bytes())
 
         elif m.command == b'getdata':
             getdata = message.GetData.from_message(m)

@@ -40,7 +40,7 @@ def parse_arguments():
     parser.add_argument(
         '--connection-limit', type=int, help='Maximum number of connections')
     parser.add_argument(
-        '--objects-queue', action='store_true', help='Enable objects queue')
+        '--msg-queue', action='store_true', help='Enable messages queue')
     parser.add_argument(
         '--i2p', action='store_true', help='Enable I2P support (uses SAMv3)')
     parser.add_argument(
@@ -89,7 +89,7 @@ def parse_arguments():
                 shared.trusted_peer = (addr[0], int(addr[1]))
     if args.connection_limit:
         shared.connection_limit = args.connection_limit
-    if args.objects_queue:
+    if args.msg_queue:
         import zmq
         zmq_context = zmq.Context()
         shared.zmq_socket = zmq_context.socket(zmq.PUB)
