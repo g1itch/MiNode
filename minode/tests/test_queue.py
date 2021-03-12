@@ -1,6 +1,6 @@
 import zmq
 
-from test_process import TestProcessProto
+from .test_process import TestProcessProto
 
 
 class TestProcessQueue(TestProcessProto):
