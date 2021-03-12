@@ -12,7 +12,7 @@ class TestProcessQueue(TestProcessProto):
         context = zmq.Context()
         cls.socket = context.socket(zmq.SUB)
         cls.socket.connect('tcp://localhost:5556')
-        cls.socket.setsockopt(zmq.RCVTIMEO, 300)
+        cls.socket.setsockopt(zmq.RCVTIMEO, 120000)
         cls.socket.setsockopt(zmq.SUBSCRIBE, b'obj')
 
     def test_receive_msg(self):
