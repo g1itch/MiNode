@@ -90,7 +90,9 @@ class TestProcess(TestProcessProto):
                 % (self._connection_limit / 2, self._wait_time))
         for t in range(_time_to_connect * 2):
             self.assertLessEqual(
-                len(connections), self._connection_limit + 1,  # one listening
+                len(connections),
+                # shared.outgoing_connections, one listening
+                8 if self._listen is False else self._connection_limit + 1,
                 'Opened more connections than required by --connection-limit')
             time.sleep(0.5)
         for c in connections:
