@@ -26,7 +26,7 @@ class Listener(threading.Thread):
                 break
             try:
                 conn, addr = self.s.accept()
-                logging.info('Incoming connection from: %s:%s', *addr)
+                logging.info('Incoming connection from: %s:%i', *addr)
                 with shared.connections_lock:
                     if len(shared.connections) > shared.connection_limit:
                         conn.close()
